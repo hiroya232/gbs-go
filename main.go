@@ -17,14 +17,14 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/stream", multiHandler)
+	http.HandleFunc("/", multiHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func multiHandler(w http.ResponseWriter, r *http.Request) {
 	getMultiList()
 	t, _ := template.ParseFiles("multiList.html")
-	t.Execute(w, "multiList")
+	t.Execute(w, nil)
 }
 
 func getMultiList() {
