@@ -17,17 +17,19 @@ import (
 )
 
 func main() {
+	dir, _ := os.Getwd()
 	http.HandleFunc("/", multiHandler)
+	http.HandleFunc("/stream", getMultiList)
+	http.Handle("/public/", http.StripPrefix("/public/", http.FileServer(http.Dir(dir+"/public/"))))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func multiHandler(w http.ResponseWriter, r *http.Request) {
-	getMultiList()
-	t, _ := template.ParseFiles("multiList.html")
+	t, _ := template.ParseFiles("public/multiList.html")
 	t.Execute(w, nil)
 }
 
-func getMultiList() {
+func getMultiList(w http.ResponseWriter, r *http.Request) {
 
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -55,23 +57,23 @@ func getMultiList() {
 		fmt.Println("ツイートの取得に失敗しました。")
 	}
 
-	for {
-		ch := <-stream.Messages
-		switch tweet := ch.(type) {
-		case *twitter.Tweet:
-			fmt.Println("\n------------------------------------------------------------------------\n ")
+		for {
+			ch := <-stream.Messages
+			switch tweet := ch.(type) {
+			case *twitter.Tweet:
+				fmt.Println("\n------------------------------------------------------------------------\n ")
 
-			splitTweet := strings.Split(tweet.Text, "\n")
-			splitMultiId := strings.Split(splitTweet[0], " ")
+				splitTweet := strings.Split(tweet.Text, "\n")
+				splitMultiId := strings.Split(splitTweet[0], " ")
 
-			fmt.Println(splitMultiId[len(splitMultiId)-2] + "\n" + splitTweet[2])
+				fmt.Println(splitMultiId[len(splitMultiId)-2] + "\n" + splitTweet[2])
 
-			_, err := db.Exec("INSERT INTO MULTI_INFO (id, multi_id, enemy) VALUES ( NULL, ?, ?)", splitMultiId[len(splitMultiId)-2], splitTweet[2])
-			if err != nil {
-				fmt.Println("\n[ERROR]：", err)
+				_, err := db.Exec("INSERT INTO MULTI_INFO (id, multi_id, enemy) VALUES ( NULL, ?, ?)", splitMultiId[len(splitMultiId)-2], splitTweet[2])
+				if err != nil {
+					fmt.Println("\n[ERROR]：", err)
+				}
+			default:
+				break
 			}
-		default:
-			break
 		}
-	}
 }
