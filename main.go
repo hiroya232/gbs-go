@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -28,6 +29,18 @@ func main() {
 func multiHandler(w http.ResponseWriter, r *http.Request) {
 	t, _ := template.ParseFiles("public/multiList.html")
 	t.Execute(w, nil)
+}
+
+type MultiInfo struct {
+	MultiId string `json:"multi_id"`
+	Enemy   string `json:"enemy"`
+}
+
+func newMultiInfo(multiId string, enemy string) *MultiInfo {
+	multiInfo := new(MultiInfo)
+	multiInfo.MultiId = multiId
+	multiInfo.Enemy = enemy
+	return multiInfo
 }
 
 func getMultiList(w http.ResponseWriter, r *http.Request) {
@@ -69,9 +82,15 @@ func getMultiList(w http.ResponseWriter, r *http.Request) {
 				splitTweet := strings.Split(tweet.Text, "\n")
 				splitMultiId := strings.Split(splitTweet[0], " ")
 
-				fmt.Println(splitMultiId[len(splitMultiId)-2] + "\n" + splitTweet[2])
+				multiInfo := newMultiInfo(splitMultiId[len(splitMultiId)-2], splitTweet[2])
+				fmt.Println(multiInfo)
+				multiInfoJson, err := json.Marshal(multiInfo)
+				if err != nil {
+					log.Fatalln(err)
+				}
+				fmt.Println(string(multiInfoJson))
 
-				err := websocket.Message.Send(ws, splitMultiId[len(splitMultiId)-2]+splitTweet[2])
+				err = websocket.Message.Send(ws, string(multiInfoJson))
 				if err != nil {
 					log.Fatalln(err)
 				}
