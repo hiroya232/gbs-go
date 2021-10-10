@@ -14,6 +14,7 @@ import (
 	"github.com/dghubble/oauth1"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
+	"golang.org/x/net/websocket"
 )
 
 func main() {
@@ -57,6 +58,8 @@ func getMultiList(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("ツイートの取得に失敗しました。")
 	}
 
+	websocket.Handler(func(ws *websocket.Conn) {
+		defer ws.Close()
 		for {
 			ch := <-stream.Messages
 			switch tweet := ch.(type) {
@@ -68,12 +71,13 @@ func getMultiList(w http.ResponseWriter, r *http.Request) {
 
 				fmt.Println(splitMultiId[len(splitMultiId)-2] + "\n" + splitTweet[2])
 
-				_, err := db.Exec("INSERT INTO MULTI_INFO (id, multi_id, enemy) VALUES ( NULL, ?, ?)", splitMultiId[len(splitMultiId)-2], splitTweet[2])
+				err := websocket.Message.Send(ws, splitMultiId[len(splitMultiId)-2]+splitTweet[2])
 				if err != nil {
-					fmt.Println("\n[ERROR]：", err)
+					log.Fatalln(err)
 				}
 			default:
 				break
 			}
 		}
+	}).ServeHTTP(w, r)
 }
