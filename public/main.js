@@ -15,7 +15,7 @@
   \************************/
 /***/ (() => {
 
-eval("document.addEventListener(\"DOMContentLoaded\", function () {\n    var loc = window.location;\n    var uri = \"ws:\";\n    if (loc.protocol === \"https:\") {\n        uri = \"wss:\";\n    }\n    uri += \"//\" + loc.host;\n    uri += loc.pathname + \"stream\";\n    var ws = new WebSocket(uri);\n    ws.onopen = function () {\n        console.log(\"Connected\");\n    };\n    ws.onmessage = function (evt) {\n        var out = document.getElementById(\"output\");\n        out.innerHTML += evt.data + \"<br>\";\n    };\n    var btn = document.querySelector(\".btn\");\n    btn.addEventListener(\"click\", function () {\n        ws.send(document.getElementById(\"input\").value);\n    });\n});\n\n\n//# sourceURL=webpack://gbs-go/./src/ts/main.ts?");
+eval("window.onload = function () {\n    var loc = window.location;\n    var uri = \"ws://\" + loc.host + loc.pathname + \"stream\";\n    var ws = new WebSocket(uri);\n    ws.onmessage = function (evt) {\n        var out = document.getElementById(\"output\");\n        out.innerHTML += evt.data + \"<br>\";\n    };\n};\n\n\n//# sourceURL=webpack://gbs-go/./src/ts/main.ts?");
 
 /***/ })
 
