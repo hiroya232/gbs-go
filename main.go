@@ -27,7 +27,7 @@ func main() {
 }
 
 func multiHandler(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("public/multiList.html")
+	t, _ := template.ParseFiles("src/html/multiList.html")
 	t.Execute(w, nil)
 }
 
