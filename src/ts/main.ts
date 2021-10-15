@@ -1,11 +1,14 @@
 window.onload = () => {
-  let loc = window.location;
-  let uri = "ws://" + loc.host + loc.pathname + "stream";
+  const getMultiListButton = document.querySelector('[data-trigger="getMultiListButton"]');
 
-  const ws = new WebSocket(uri);
+  getMultiListButton.addEventListener('click', function () {
+    let loc = window.location;
+    let uri = "ws://" + loc.host + "/stream";
 
-  ws.onmessage = function (evt) {
-    let out = document.getElementById("output");
-    out.innerHTML += evt.data + "<br>";
-  };
-};
+    const ws = new WebSocket(uri);
+    ws.onmessage = function (evt) {
+      let out = document.getElementById("multiList");
+      out.innerHTML += evt.data + "<br>";
+    };
+  })
+}
