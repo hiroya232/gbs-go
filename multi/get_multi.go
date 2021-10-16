@@ -33,11 +33,7 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln(err.Error())
 	}
 
-	config := oauth1.NewConfig(os.Getenv("TWITTER_COMSUMER_KEY"), os.Getenv("TWITTER_COMSUMER_SECRET_KEY"))
-	token := oauth1.NewToken(os.Getenv("TWITTER_ACCESS_TOKEN"), os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"))
-	httpClient := config.Client(oauth1.NoContext, token)
-	client := twitter.NewClient(httpClient)
-
+	client := createNewClient()
 	params := &twitter.StreamFilterParams{
 		Track:         []string{"参加者募集！"},
 		StallWarnings: twitter.Bool(true),
@@ -54,18 +50,7 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 			switch tweet := ch.(type) {
 			case *twitter.Tweet:
 				fmt.Println("\n------------------------------------------------------------------------\n ")
-
-				splitTweet := strings.Split(tweet.Text, "\n")
-				splitMultiId := strings.Split(splitTweet[0], " ")
-
-				multiInfo := newMultiInfo(splitMultiId[len(splitMultiId)-2], splitTweet[2])
-				fmt.Println(multiInfo)
-				multiInfoJson, err := json.Marshal(multiInfo)
-				if err != nil {
-					log.Fatalln(err)
-				}
-				fmt.Println(string(multiInfoJson))
-
+				multiInfoJson := formatMultiInfo(tweet)
 				err = websocket.Message.Send(ws, string(multiInfoJson))
 				if err != nil {
 					log.Fatalln(err)
@@ -75,4 +60,25 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}).ServeHTTP(w, r)
+}
+
+func createNewClient() *twitter.Client {
+	config := oauth1.NewConfig(os.Getenv("TWITTER_COMSUMER_KEY"), os.Getenv("TWITTER_COMSUMER_SECRET_KEY"))
+	token := oauth1.NewToken(os.Getenv("TWITTER_ACCESS_TOKEN"), os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"))
+	httpClient := config.Client(oauth1.NoContext, token)
+	return twitter.NewClient(httpClient)
+}
+
+func formatMultiInfo(tweet *twitter.Tweet) []byte {
+	splitTweet := strings.Split(tweet.Text, "\n")
+	splitMultiId := strings.Split(splitTweet[0], " ")
+
+	multiInfo := newMultiInfo(splitMultiId[len(splitMultiId)-2], splitTweet[2])
+	fmt.Println(multiInfo)
+	multiInfoJson, err := json.Marshal(multiInfo)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(string(multiInfoJson))
+	return multiInfoJson
 }
