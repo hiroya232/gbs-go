@@ -1,7 +1,6 @@
 package multi
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -33,13 +32,6 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-
-	dbconf := "root:@tcp(127.0.0.1:3306)/gbs_go?charset=utf8mb4"
-	db, err := sql.Open("mysql", dbconf)
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-	defer db.Close()
 
 	config := oauth1.NewConfig(os.Getenv("TWITTER_COMSUMER_KEY"), os.Getenv("TWITTER_COMSUMER_SECRET_KEY"))
 	token := oauth1.NewToken(os.Getenv("TWITTER_ACCESS_TOKEN"), os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"))
