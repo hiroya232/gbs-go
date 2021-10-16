@@ -15,7 +15,7 @@
   \************************/
 /***/ (() => {
 
-eval("window.onload = function () {\n    var getMultiListButton = document.querySelector('[data-trigger=\"getMultiListButton\"]');\n    var stopGetMultiListButton = document.querySelector('[data-trigger=\"stopGetMultiListButton\"]');\n    getMultiListButton.addEventListener('click', function () {\n        var loc = window.location;\n        var uri = 'ws://' + loc.host + '/stream';\n        var ws = new WebSocket(uri);\n        ws.onmessage = function (evt) {\n            var out = document.getElementById('multiList');\n            out.innerHTML += evt.data + '<br>';\n        };\n        stopGetMultiListButton.addEventListener('click', function () {\n            ws.close();\n        });\n    });\n};\n\n\n//# sourceURL=webpack://gbs-go/./src/ts/main.ts?");
+eval("window.onload = function () {\n    var startGetMultiListButton = document.querySelector('[data-trigger=\"startGetMultiListButton\"]');\n    var stopGetMultiListButton = document.querySelector('[data-trigger=\"stopGetMultiListButton\"]');\n    startGetMultiListButton.addEventListener('click', function () {\n        var loc = window.location;\n        var uri = 'ws://' + loc.host + '/stream';\n        var ws = new WebSocket(uri);\n        ws.onmessage = function (evt) {\n            var out = document.getElementById('multiList');\n            out.innerHTML += evt.data + '<br>';\n        };\n        stopGetMultiListButton.addEventListener('click', function () {\n            ws.close();\n        });\n    });\n};\n\n\n//# sourceURL=webpack://gbs-go/./src/ts/main.ts?");
 
 /***/ })
 

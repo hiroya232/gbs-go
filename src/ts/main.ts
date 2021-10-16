@@ -1,12 +1,12 @@
 window.onload = () => {
-    const getMultiListButton = document.querySelector(
-        '[data-trigger="getMultiListButton"]'
+    const startGetMultiListButton = document.querySelector(
+        '[data-trigger="startGetMultiListButton"]'
     );
     const stopGetMultiListButton = document.querySelector(
         '[data-trigger="stopGetMultiListButton"]'
     );
 
-    getMultiListButton.addEventListener('click', () => {
+    startGetMultiListButton.addEventListener('click', () => {
         const loc = window.location;
         const uri = 'ws://' + loc.host + '/stream';
 
