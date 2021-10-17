@@ -11,9 +11,9 @@ window.onload = () => {
         const uri = 'ws://' + loc.host + '/stream';
 
         const ws = new WebSocket(uri);
-        ws.onmessage = function (evt) {
-            const out = document.getElementById('multiList');
-            out.innerHTML += evt.data + '<br>';
+        ws.onmessage = function (event) {
+            const multiList = document.getElementById('multiList');
+            multiList.innerHTML += event.data + '<br>';
         };
         stopGetMultiListButton.addEventListener('click', () => {
             ws.close();
