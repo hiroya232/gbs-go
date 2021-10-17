@@ -25,7 +25,7 @@ window.onload = () => {
             multiBox.className = 'multiBox';
 
             const multiList = document.getElementById('multiList');
-            multiList.append(multiBox);
+            multiList.prepend(multiBox);
         };
 
         stopGetMultiListButton.addEventListener('click', () => {
