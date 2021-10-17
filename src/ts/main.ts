@@ -29,6 +29,17 @@ window.onload = () => {
                 multiList.lastChild.remove();
             }
             multiList.prepend(multiBox);
+
+            multiBox.addEventListener('click', () => {
+                navigator.clipboard.writeText(multiId.innerHTML).then(
+                    () => {
+                        console.log('copied');
+                    },
+                    () => {
+                        console.log('failed to copy');
+                    }
+                );
+            });
         };
 
         stopGetMultiListButton.addEventListener('click', () => {
