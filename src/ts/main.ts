@@ -12,9 +12,20 @@ window.onload = () => {
 
         const ws = new WebSocket(uri);
         ws.onmessage = function (event) {
+            const multiInfo = JSON.parse(event.data);
+
+            const multiBox = document.createElement('div');
+            const multiId = document.createElement('div');
+            const multiEnemy = document.createElement('div');
+            multiId.append(multiInfo.multi_id);
+            multiEnemy.append(multiInfo.enemy);
+            multiBox.append(multiId);
+            multiBox.append(multiEnemy);
+
             const multiList = document.getElementById('multiList');
-            multiList.innerHTML += event.data + '<br>';
+            multiList.append(multiBox);
         };
+
         stopGetMultiListButton.addEventListener('click', () => {
             ws.close();
         });
