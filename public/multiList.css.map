@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,UAAU,AAAC,CACP,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,CACb,MAAM,CAAE,eAAe,CACvB,UAAU,CAAE,MAAM,CACrB,AAED,AAAA,SAAS,AAAC,CACN,OAAO,CAAE,GAAG,CACZ,MAAM,CAAE,GAAG,CACX,MAAM,CAAE,eAAe,CAC1B",
+    "sources": [
+        "../src/css/multiList.scss"
+    ],
+    "names": [],
+    "file": "multiList.css"
+}
