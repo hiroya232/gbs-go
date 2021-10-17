@@ -22,6 +22,8 @@ window.onload = () => {
             multiBox.append(multiId);
             multiBox.append(multiEnemy);
 
+            multiBox.className = 'multiBox';
+
             const multiList = document.getElementById('multiList');
             multiList.append(multiBox);
         };
