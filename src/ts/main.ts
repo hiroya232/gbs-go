@@ -25,6 +25,9 @@ window.onload = () => {
             multiBox.className = 'multiBox';
 
             const multiList = document.getElementById('multiList');
+            if (multiList.childElementCount == 20) {
+                multiList.lastChild.remove();
+            }
             multiList.prepend(multiBox);
         };
 
