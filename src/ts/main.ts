@@ -33,6 +33,7 @@ window.onload = () => {
             multiBox.addEventListener('click', () => {
                 navigator.clipboard.writeText(multiId.innerHTML).then(
                     () => {
+                        multiBox.classList.add('clicked');
                         console.log('copied');
                     },
                     () => {
