@@ -56,7 +56,7 @@ window.onload = () => {
 
         ws.onopen = () => {
             console.log('Connection start!!');
-            ws.send('参加者募集！');
+            ws.send(startGetMultiListButton.getAttribute('value'));
         };
 
         ws.onclose = () => {
