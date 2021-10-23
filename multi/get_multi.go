@@ -57,21 +57,15 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 	Streaming:
 		for {
 			select {
-			case <-stream.Messages:
-				ch := <-stream.Messages
-				switch tweet := ch.(type) {
-				case *twitter.Tweet:
-					fmt.Println("\n------------------------------------------------------------------------\n ")
-					multiInfoJson := formatMultiInfo(tweet)
-					err = websocket.Message.Send(ws, string(multiInfoJson))
-					if err != nil {
-						log.Fatalln(err)
-					}
-				default:
-					break Streaming
+			case multiInfo := <-stream.Messages:
+				fmt.Println("\n------------------------------------------------------------------------\n ")
+				multiInfoJson := formatMultiInfo(multiInfo.(*twitter.Tweet))
+				err = websocket.Message.Send(ws, string(multiInfoJson))
+				if err != nil {
+					log.Println(err)
 				}
-			case recv := <-closeChan:
-				fmt.Println(recv)
+			case closeSignal := <-closeChan:
+				fmt.Println(closeSignal)
 				break Streaming
 			}
 
