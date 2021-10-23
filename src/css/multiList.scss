@@ -9,9 +9,22 @@
     padding: 5px;
     margin: 2px;
     border: 1px solid black;
-
+    position: relative;
+    z-index: 0;
 }
 
-.clicked {
+.-copied {
     opacity: 0.5;
+}
+
+.copiedMessage {
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+}
+
+.-on {
+    position: relative;
+    z-index: 2;
+    opacity: 1;
 }

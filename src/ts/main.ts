@@ -33,7 +33,14 @@ window.onload = () => {
             multiBox.addEventListener('click', () => {
                 navigator.clipboard.writeText(multiId.innerHTML).then(
                     () => {
-                        multiBox.classList.add('clicked');
+                        multiBox.classList.add('-copied');
+                        let copiedMessageElement =
+                            document.querySelector('.copiedMessage');
+                        copiedMessageElement.classList.add('-on');
+                        setTimeout(
+                            () => copiedMessageElement.classList.remove('-on'),
+                            3000
+                        );
                         console.log('copied');
                     },
                     () => {
