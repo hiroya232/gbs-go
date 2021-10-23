@@ -53,5 +53,13 @@ window.onload = () => {
         stopGetMultiListButton.addEventListener('click', () => {
             ws.close();
         });
+
+        ws.onopen = () => {
+            console.log('Connection start!!');
+        };
+
+        ws.onclose = () => {
+            console.log('Connection stop!!');
+        };
     });
 };
