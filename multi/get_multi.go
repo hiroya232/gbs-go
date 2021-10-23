@@ -44,20 +44,33 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	websocket.Handler(func(ws *websocket.Conn) {
+		fmt.Println("Connection start!!")
 		defer ws.Close()
+
+		closeChan := make(chan interface{})
+		go recvCloseSignal(ws, closeChan)
+
+	Streaming:
 		for {
-			ch := <-stream.Messages
-			switch tweet := ch.(type) {
-			case *twitter.Tweet:
-				fmt.Println("\n------------------------------------------------------------------------\n ")
-				multiInfoJson := formatMultiInfo(tweet)
-				err = websocket.Message.Send(ws, string(multiInfoJson))
-				if err != nil {
-					log.Fatalln(err)
+			select {
+			case <-stream.Messages:
+				ch := <-stream.Messages
+				switch tweet := ch.(type) {
+				case *twitter.Tweet:
+					fmt.Println("\n------------------------------------------------------------------------\n ")
+					multiInfoJson := formatMultiInfo(tweet)
+					err = websocket.Message.Send(ws, string(multiInfoJson))
+					if err != nil {
+						log.Fatalln(err)
+					}
+				default:
+					break Streaming
 				}
-			default:
-				break
+			case recv := <-closeChan:
+				fmt.Println(recv)
+				break Streaming
 			}
+
 		}
 	}).ServeHTTP(w, r)
 }
@@ -67,6 +80,13 @@ func createNewClient() *twitter.Client {
 	token := oauth1.NewToken(os.Getenv("TWITTER_ACCESS_TOKEN"), os.Getenv("TWITTER_ACCESS_TOKEN_SECRET"))
 	httpClient := config.Client(oauth1.NoContext, token)
 	return twitter.NewClient(httpClient)
+}
+
+func recvCloseSignal(ws *websocket.Conn, ch chan interface{}) {
+	for {
+		websocket.Message.Receive(ws, nil)
+		ch <- "Connection stop!!"
+	}
 }
 
 func formatMultiInfo(tweet *twitter.Tweet) []byte {
