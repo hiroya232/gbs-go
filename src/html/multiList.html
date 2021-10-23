@@ -15,18 +15,27 @@
     </head>
     <body>
         <header>Gran Blue Search</header>
-        <button
-            type="button"
-            data-trigger="startGetMultiListButton"
-            value="Lv150 プロトバハムート"
-        >
-            プロトバハムートHL
-        </button>
-        <button type="button" data-trigger="stopGetMultiListButton">
-            stop
-        </button>
-        <div id="multiList" class="multiList">
-            <span class="copiedMessage">Copied!</span>
+        <div class="container">
+            <div class="sideBar">
+                <button
+                    type="button"
+                    class="targetMultiButton"
+                    data-trigger="startGetMultiListButton"
+                    value="Lv150 プロトバハムート"
+                >
+                    プロトバハムートHL
+                </button>
+                <button
+                    type="button"
+                    class="targetMultiButton"
+                    data-trigger="stopGetMultiListButton"
+                >
+                    stop
+                </button>
+            </div>
+            <div id="multiList" class="multiList">
+                <span class="copiedMessage">Copied!</span>
+            </div>
         </div>
     </body>
 </html>
