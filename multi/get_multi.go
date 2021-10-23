@@ -33,19 +33,23 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln(err.Error())
 	}
 
-	client := createNewClient()
-	params := &twitter.StreamFilterParams{
-		Track:         []string{"参加者募集！"},
-		StallWarnings: twitter.Bool(true),
-	}
-	stream, err := client.Streams.Filter(params)
-	if err != nil {
-		fmt.Println("ツイートの取得に失敗しました。")
-	}
-
 	websocket.Handler(func(ws *websocket.Conn) {
 		fmt.Println("Connection start!!")
 		defer ws.Close()
+
+		client := createNewClient()
+
+		var enemy string
+		websocket.Message.Receive(ws, &enemy)
+		params := &twitter.StreamFilterParams{
+			Track:         []string{enemy},
+			StallWarnings: twitter.Bool(true),
+		}
+
+		stream, err := client.Streams.Filter(params)
+		if err != nil {
+			fmt.Println("ツイートの取得に失敗しました。")
+		}
 
 		closeChan := make(chan interface{})
 		go recvCloseSignal(ws, closeChan)
