@@ -1,4 +1,4 @@
-import { showMultiBox } from './showMulti';
+import { showMultiBox, createMultiList } from './showMulti';
 
 window.onload = (): void => {
     const loc = window.location;
@@ -11,6 +11,8 @@ window.onload = (): void => {
     );
     startGetMultiListButtons.forEach((startGetMultiListButton) => {
         startGetMultiListButton.addEventListener('click', (): void => {
+            createMultiList();
+
             ws = new WebSocket(uri);
 
             ws.onopen = (): void => {

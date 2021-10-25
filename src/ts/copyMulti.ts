@@ -1,6 +1,9 @@
 import { multiInfo } from './showMulti';
 
-export const copyMultiId = (multiInfoElement: multiInfo): void => {
+export const copyMultiId = (
+    multiInfoElement: multiInfo,
+    count: string
+): void => {
     navigator.clipboard
         .writeText(multiInfoElement.multiIdElement.innerHTML)
         .then(
@@ -8,9 +11,10 @@ export const copyMultiId = (multiInfoElement: multiInfo): void => {
                 console.log('copied');
 
                 multiInfoElement.multiBoxElement.classList.add('-copied');
-                const copiedMessageElement =
-                    document.querySelector('.copiedMessage');
-                document.querySelector('.copiedMessage').classList.add('-on');
+                const copiedMessageElement = document.querySelector(
+                    `#copiedMessage${count}`
+                );
+                copiedMessageElement.classList.add('-on');
 
                 setTimeout(
                     () => copiedMessageElement.classList.remove('-on'),
