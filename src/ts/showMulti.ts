@@ -16,7 +16,7 @@ let count = 0;
 export const createMultiList = () => {
     const multiListElement = document.createElement('div');
     multiListElement.className = 'multiList';
-    multiListElement.setAttribute('id', `multiList${++count}`);
+    multiListElement.setAttribute('data-multi-list-id', `list${++count}`);
 
     const copiedMessageElement = document.createElement('span');
     copiedMessageElement.innerHTML = 'Copied!';
@@ -51,7 +51,7 @@ export const showMultiBox = (ws: WebSocket, event: MessageEvent): void => {
 
     const multiInfoElement = createMultiBox(recvMultiInfo);
 
-    const multiList = document.getElementById(`multiList${count}`);
+    const multiList = document.querySelector(`[data-multi-list-id=list${count}]`);
     if (multiList.childElementCount >= 20) {
         multiList.lastChild.remove();
     }
@@ -61,8 +61,8 @@ export const showMultiBox = (ws: WebSocket, event: MessageEvent): void => {
     multiInfoElement.multiBoxElement.addEventListener('click', () => {
         copyMultiId(
             multiInfoElement,
-            multiInfoElement.multiBoxElement.parentElement.id.replace(
-                'multiList',
+            multiInfoElement.multiBoxElement.parentElement.dataset.multiListId.replace(
+                'list',
                 ''
             )
         );
