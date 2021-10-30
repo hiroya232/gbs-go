@@ -21,8 +21,21 @@ export const createMultiList = () => {
     const copiedMessageElement = document.createElement('span');
     copiedMessageElement.innerHTML = 'Copied!';
     copiedMessageElement.className = 'copiedMessage';
-    copiedMessageElement.setAttribute('id', `copiedMessage${count}`);
+    copiedMessageElement.setAttribute(
+        'data-copy-multi-message',
+        `copiedMessage${count}`
+    );
 
+    const stopButton = document.createElement('button');
+    stopButton.className = 'targetMultiButton';
+    stopButton.setAttribute('type', 'button');
+    stopButton.setAttribute(
+        'data-multi-stop',
+        `stopGetMultiListButton${count}`
+    );
+    stopButton.innerHTML = 'stop';
+
+    multiListElement.prepend(stopButton);
     multiListElement.append(copiedMessageElement);
 
     document.querySelector('.container').append(multiListElement);
