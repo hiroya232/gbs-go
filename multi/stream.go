@@ -40,9 +40,11 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 
 	Streaming:
 		for {
+			fmt.Println("・")
 			select {
 			case multiInfo := <-stream.Messages:
 				multiInfoJson := formatMultiInfo(multiInfo.(*twitter.Tweet))
+				fmt.Println("stream.Messages：", string(multiInfoJson))
 				err = websocket.Message.Send(ws, string(multiInfoJson))
 				if err != nil {
 					log.Println(err)
@@ -51,7 +53,6 @@ func GetMultiList(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(closeSignal)
 				break Streaming
 			}
-
 		}
 	}).ServeHTTP(w, r)
 }
