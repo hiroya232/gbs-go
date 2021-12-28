@@ -15,7 +15,7 @@ type MultiInfo struct {
 	Enemy   string `json:"enemy"`
 }
 
-func newMultiInfo(multiId string, enemy string) *MultiInfo {
+func NewMultiInfo(multiId string, enemy string) *MultiInfo {
 	multiInfo := new(MultiInfo)
 	multiInfo.MultiId = multiId
 	multiInfo.Enemy = enemy
@@ -30,13 +30,13 @@ func createNewClient() *twitter.Client {
 }
 
 func formatMultiInfo(tweet *twitter.Tweet) []byte {
-	splitTweet := strings.Split(tweet.Text, "\n")
-	splitMultiId := strings.Split(splitTweet[0], " ")
+	splitMultiInfo := strings.Split(tweet.Text, "\n")
+	splitMultiId := strings.Split(splitMultiInfo[0], " ")
 
-	multiInfo := newMultiInfo(splitMultiId[len(splitMultiId)-2], splitTweet[2])
-	multiInfoJson, err := json.Marshal(multiInfo)
+	formattedMultiInfo := NewMultiInfo(splitMultiId[len(splitMultiId)-2], splitMultiInfo[2])
+	formattedmultiInfoJson, err := json.Marshal(formattedMultiInfo)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	return multiInfoJson
+	return formattedmultiInfoJson
 }
