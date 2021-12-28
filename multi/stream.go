@@ -11,50 +11,58 @@ import (
 )
 
 func GetMultiList(w http.ResponseWriter, r *http.Request) {
-
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
+	loadEnv()
+	client := createNewClient()
 
 	websocket.Handler(func(ws *websocket.Conn) {
 		fmt.Println("Connection start!!")
 		defer ws.Close()
 
-		client := createNewClient()
-
-		var enemy string
-		websocket.Message.Receive(ws, &enemy)
-		params := &twitter.StreamFilterParams{
-			Track:         []string{enemy},
-			StallWarnings: twitter.Bool(true),
-		}
-
-		stream, err := client.Streams.Filter(params)
-		if err != nil {
-			fmt.Println("ツイートの取得に失敗しました。")
-		}
-
-		closeChan := make(chan interface{})
-		go recvCloseSignal(ws, closeChan)
-
-	Streaming:
-		for {
-			fmt.Println("・")
-			select {
-			case multiInfo := <-stream.Messages:
-				multiInfoJson := formatMultiInfo(multiInfo.(*twitter.Tweet))
-				fmt.Println("stream.Messages：", string(multiInfoJson))
-				err = websocket.Message.Send(ws, string(multiInfoJson))
-				if err != nil {
-					log.Println(err)
-				}
-			case closeSignal := <-closeChan:
-				fmt.Println(closeSignal)
-				break Streaming
-			}
-		}
+		streamingMulti(ws, client)
 	}).ServeHTTP(w, r)
+}
+
+func loadEnv() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+}
+
+func streamingMulti(ws *websocket.Conn, client *twitter.Client) {
+	stream, err := client.Streams.Filter(getFilterCondition(ws))
+	if err != nil {
+		fmt.Println("マルチ情報の取得に失敗しました。")
+	}
+
+	closeChan := make(chan interface{})
+	go recvCloseSignal(ws, closeChan)
+
+Streaming:
+	for {
+		select {
+		case multiInfo := <-stream.Messages:
+			multiInfoJson := formatMultiInfo(multiInfo.(*twitter.Tweet))
+			fmt.Println("stream.Messages：", string(multiInfoJson))
+			err := websocket.Message.Send(ws, string(multiInfoJson))
+			if err != nil {
+				log.Println(err)
+			}
+		case closeSignal := <-closeChan:
+			fmt.Println(closeSignal)
+			break Streaming
+		}
+	}
+}
+
+func getFilterCondition(ws *websocket.Conn) (filterCondition *twitter.StreamFilterParams) {
+	var enemy string
+	websocket.Message.Receive(ws, &enemy)
+	filterCondition = &twitter.StreamFilterParams{
+		Track:         []string{enemy},
+		StallWarnings: twitter.Bool(true),
+	}
+	return filterCondition
 }
 
 func recvCloseSignal(ws *websocket.Conn, ch chan interface{}) {
