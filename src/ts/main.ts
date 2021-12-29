@@ -1,27 +1,27 @@
-import { showMultiBox, createMultiList } from './showMulti';
+import { addMultiBox, createMultiListContainer } from './showMulti';
 
 window.onload = (): void => {
-    const loc = window.location;
-    const uri = 'ws://' + loc.host + '/stream';
+    const host = window.location.host;
+    const url = 'ws://' + host + '/stream';
 
     let ws: WebSocket;
 
-    const startGetMultiListButtons = document.querySelectorAll(
-        '[data-trigger="startGetMultiListButton"]'
+    const startStreamingButtons = document.querySelectorAll(
+        '[data-trigger="startStreamingButtons"]'
     );
-    startGetMultiListButtons.forEach((startGetMultiListButton) => {
-        startGetMultiListButton.addEventListener('click', (): void => {
-            createMultiList();
+    startStreamingButtons.forEach((startStreamingButton) => {
+        startStreamingButton.addEventListener('click', (): void => {
+            createMultiListContainer();
 
-            ws = new WebSocket(uri);
+            ws = new WebSocket(url);
 
             ws.onopen = (): void => {
                 console.log('Connection start!!');
-                ws.send(startGetMultiListButton.getAttribute('value'));
+                ws.send(startStreamingButton.getAttribute('value'));
             };
 
             ws.onmessage = (event): void => {
-                showMultiBox(ws, event);
+                addMultiBox(ws, event);
             };
 
             ws.onclose = (): void => {
@@ -30,10 +30,9 @@ window.onload = (): void => {
         });
     });
 
-    const stopGetMultiListButton = document.querySelector(
-        '[data-trigger="stopGetMultiListButton"]'
-    );
-    stopGetMultiListButton.addEventListener('click', (): void => {
-        ws.close();
-    });
+    document
+        .querySelector('[data-trigger="stopStreamingButtons"]')
+        .addEventListener('click', (): void => {
+            ws.close();
+        });
 };

@@ -1,9 +1,9 @@
 import { copyMultiId } from './copyMulti';
 
-export interface multiInfo {
-    multiBoxElement: HTMLDivElement;
-    multiIdElement: HTMLDivElement;
-    multiEnemyElement: HTMLDivElement;
+export interface multiBox {
+    info: HTMLDivElement;
+    id: HTMLDivElement;
+    enemy: HTMLDivElement;
 }
 
 type multiInfoJson = {
@@ -13,71 +13,67 @@ type multiInfoJson = {
 
 let count = 0;
 
-export const createMultiList = () => {
-    const multiListElement = document.createElement('div');
-    multiListElement.className = 'multiList';
-    multiListElement.setAttribute('data-multi-list-id', `list${++count}`);
+export const createMultiListContainer = () => {
+    const multiListContainer = document.createElement('div');
+    multiListContainer.className = 'multiList';
+    multiListContainer.setAttribute('data-multi-list-id', `list${++count}`);
 
-    const copiedMessageElement = document.createElement('span');
-    copiedMessageElement.innerHTML = 'Copied!';
-    copiedMessageElement.className = 'copiedMessage';
-    copiedMessageElement.setAttribute(
+    const copiedMessage = document.createElement('span');
+    copiedMessage.className = 'copiedMessage';
+    copiedMessage.setAttribute(
         'data-copy-multi-message',
         `copiedMessage${count}`
     );
+    copiedMessage.innerHTML = 'Copied!';
 
     const stopButton = document.createElement('button');
     stopButton.className = 'targetMultiButton';
     stopButton.setAttribute('type', 'button');
-    stopButton.setAttribute(
-        'data-multi-stop',
-        `stopGetMultiListButton${count}`
-    );
+    stopButton.setAttribute('data-multi-stop', `stopStreamingButtons${count}`);
     stopButton.innerHTML = 'stop';
 
-    multiListElement.prepend(stopButton);
-    multiListElement.append(copiedMessageElement);
+    multiListContainer.prepend(stopButton);
+    multiListContainer.append(copiedMessage);
 
-    document.querySelector('.container').append(multiListElement);
+    document.querySelector('.container').append(multiListContainer);
 };
 
-const createMultiBox = (recvMultiInfo: multiInfoJson): multiInfo => {
-    const multiInfoElement: multiInfo = {
-        multiBoxElement: document.createElement('div'),
-        multiIdElement: document.createElement('div'),
-        multiEnemyElement: document.createElement('div'),
+const createMultiBox = (recvMultiInfo: multiInfoJson): multiBox => {
+    const multiBox: multiBox = {
+        info: document.createElement('div'),
+        id: document.createElement('div'),
+        enemy: document.createElement('div'),
     };
 
-    multiInfoElement.multiIdElement.innerHTML = recvMultiInfo.multi_id;
-    multiInfoElement.multiEnemyElement.innerHTML = recvMultiInfo.enemy;
+    multiBox.id.innerHTML = recvMultiInfo.multi_id;
+    multiBox.enemy.innerHTML = recvMultiInfo.enemy;
 
-    multiInfoElement.multiBoxElement.append(multiInfoElement.multiIdElement);
-    multiInfoElement.multiBoxElement.append(multiInfoElement.multiEnemyElement);
+    multiBox.info.append(multiBox.id);
+    multiBox.info.append(multiBox.enemy);
 
-    multiInfoElement.multiBoxElement.className = 'multiBox';
+    multiBox.info.className = 'multiBox';
 
-    return multiInfoElement;
+    return multiBox;
 };
 
-export const showMultiBox = (ws: WebSocket, event: MessageEvent): void => {
+export const addMultiBox = (ws: WebSocket, event: MessageEvent): void => {
     const recvMultiInfo = JSON.parse(event.data) as multiInfoJson;
 
-    const multiInfoElement = createMultiBox(recvMultiInfo);
+    const multiBox = createMultiBox(recvMultiInfo);
 
-    const multiList = document.querySelector(`[data-multi-list-id=list${count}]`);
+    const multiList = document.querySelector(
+        `[data-multi-list-id=list${count}]`
+    );
     if (multiList.childElementCount >= 20) {
         multiList.lastChild.remove();
     }
 
-    multiList.prepend(multiInfoElement.multiBoxElement);
+    multiList.prepend(multiBox.info);
 
-    multiInfoElement.multiBoxElement.addEventListener('click', () => {
+    multiBox.info.addEventListener('click', () => {
         copyMultiId(
-            multiInfoElement,
-            multiInfoElement.multiBoxElement.parentElement.dataset.multiListId.replace(
-                'list',
-                ''
-            )
+            multiBox,
+            multiBox.info.parentElement.dataset.multiListId.replace('list', '')
         );
     });
 };

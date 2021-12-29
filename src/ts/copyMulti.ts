@@ -1,28 +1,20 @@
-import { multiInfo } from './showMulti';
+import { multiBox } from './showMulti';
 
-export const copyMultiId = (
-    multiInfoElement: multiInfo,
-    count: string
-): void => {
-    navigator.clipboard
-        .writeText(multiInfoElement.multiIdElement.innerHTML)
-        .then(
-            () => {
-                console.log('copied');
+export const copyMultiId = (multiInfo: multiBox, count: string): void => {
+    navigator.clipboard.writeText(multiInfo.id.innerHTML).then(
+        () => {
+            console.log('copied');
 
-                multiInfoElement.multiBoxElement.classList.add('-copied');
-                const copiedMessageElement = document.querySelector(
-                    `#copiedMessage${count}`
-                );
-                copiedMessageElement.classList.add('-on');
+            multiInfo.info.classList.add('-copied');
+            const copiedMessage = document.querySelector(
+                `#copiedMessage${count}`
+            );
+            copiedMessage.classList.add('-on');
 
-                setTimeout(
-                    () => copiedMessageElement.classList.remove('-on'),
-                    3000
-                );
-            },
-            () => {
-                console.log('failed to copy');
-            }
-        );
+            setTimeout(() => copiedMessage.classList.remove('-on'), 3000);
+        },
+        () => {
+            console.log('failed to copy');
+        }
+    );
 };
